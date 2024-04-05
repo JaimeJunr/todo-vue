@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<script setup>
 import { reactive } from 'vue';
+import CHeader from './components/Header.vue';
+import CForm from './components/Form.vue';
+import TaskList from './components/TaskList.vue';
 
   const state = reactive({
     filtro: "todas",
@@ -54,42 +57,10 @@ import { reactive } from 'vue';
 
 <template>
   <div class="container">
-    <header class="p-5 mb-4 mt-4 bg-light rounded-3">
-      <h1>Minhas tarefas</h1>
-      <p>
-        Você possui {{ getTaskPendente().length }} tarefas pendentes
-      </p>
-    </header>
-    <form @submit.prevent="taskCadastre">
-      <div class="row">
-        <div class="col">
-          <input :value="state.tempTask" @change="ev => state.tempTask = ev.target.value" required type="text" class="form-control">
-        </div>
-        <div class="col-md-2">
-          <button type="submit" class="btn btn-primary">Cadastrar</button>
-        </div>
-        <div class="col-md-2">
-          <select @change="ev => state.filtro = ev.target.value" class="form-control">
-            <option value="todas">Todas as Tarefas</option>
-            <option value="pendentes">Pendentes</option>
-            <option value="finalizadas">Finalizadas</option>
-          </select>
-        </div>
-      </div>
-    </form>
-    <ul class="list-group mt-4">
-      <li class="list-group-item" v-for="task in getTaskFiltradas()">
-        <input class="me-3" type="checkbox" @change="ev => task.finalizada = ev.target.checked" :id="task.titulo" :checked="task.finalizada" >
-        <label :class="{ done: task.finalizada }" :for="task.titulo">
-          {{ task.titulo }}
-        </label>
-      </li>
-    </ul>
+    <CHeader :tarefas-pendestes="getTaskPendente()" />
+    <CForm :editFiltro="ev => state.filtro = ev.target.value" :tempTask="state.tempTask" :editTempTask="ev => state.tempTask = ev.target.value" :taskCadastre="taskCadastre"/>
+    <TaskList :getTaskFiltradas="getTaskFiltradas"/>
+    
   </div>
 </template>
 
-<style scoped>
-  .done{
-    text-decoration: line-through;
-  }
-</style>
